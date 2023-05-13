@@ -1,0 +1,4 @@
+resources:
+  - wp-pvc-hnas.yaml
+  - mysql-deployment.yaml
+  - wordpress-deployment.yaml
