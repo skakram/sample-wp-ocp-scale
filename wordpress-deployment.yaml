@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-app-emea-dev
+  labels:
+    app: wp-app-emea-dev
+spec:
+  selector:
+    matchLabels:
+      app: wp-app-emea-dev
+      tier: frontend
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: wp-app-emea-dev
+        tier: frontend
+    spec:
+      containers:
+      - image: wordpress:5.5.1-php7.4-apache
+        name: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: wp-mysql-emea-dev
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 80
+          name: wordpress
+        resources:
+          limits:
+            cpu: 500m
+          requests:
+            cpu: 200m
+        volumeMounts:
+        - name: wordpress-hnas-volume-pvc
+          mountPath: /var/www/html
+      volumes:
+      - name: wordpress-hnas-volume-pvc
+        persistentVolumeClaim:
+          claimName: pvc-wp-hnas
