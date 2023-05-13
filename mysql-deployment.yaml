@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wp-mysql-emea-dev
+  labels:
+    app: wp-mysql-emea-dev
+spec:
+  ports:
+    - port: 3306
+  selector:
+    app: wp-mysql-emea-dev
+    tier: mysql
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-wp-mysql-emea-dev
+  labels:
+    app: wp-mysql-emea-dev
+spec:
+  storageClassName: sc-platinum
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wp-mysql-emea-dev
+  labels:
+    app: wp-mysql-emea-dev
+spec:
+  selector:
+    matchLabels:
+      app: wp-mysql-emea-dev
+      tier: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wp-mysql-emea-dev
+        tier: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: pvc-wp-emea-mysql-dev
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: pvc-wp-emea-mysql-dev
+        persistentVolumeClaim:
+          claimName: pvc-wp-mysql-emea-dev
