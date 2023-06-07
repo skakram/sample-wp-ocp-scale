@@ -18,7 +18,7 @@ metadata:
   labels:
     app: wp-mysql-emea-dev
 spec:
-  storageClassName: sc-platinum
+  storageClassName: sc-gold-dc1
   accessModes:
     - ReadWriteOnce
   resources:
