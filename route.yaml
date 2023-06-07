@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: wp-app-emea-dev
+  name: wp-hnas-dc1
+spec:
+  host: wordpress-hnas-dc1.apps.ocp-emea-clu01.coe.net
+  port:
+    targetPort: 80
+  to:
+    kind: Service
+    name: wp-app-emea-dev
+    weight: 100
