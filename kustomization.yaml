@@ -3,3 +3,4 @@ resources:
   - mysql-deployment.yaml
   - wordpress-deployment.yaml
   - wp-service.yaml
+  - route.yaml
